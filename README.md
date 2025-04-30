@@ -12,6 +12,7 @@ This demo is built with:
 
 - [Neon](https://neon.tech)
 - [Neon Auth](https://neon.tech/docs/guides/neon-auth)
+- Neon Data API (Postgrest-compatible)
 
 ## Prerequisites
 
