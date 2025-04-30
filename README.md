@@ -1,30 +1,24 @@
 # note.
 
-This project demonstrates how to build a modern note-taking application using Neon Data API (powered by PostgREST) and Stack Auth for authentication. Instead of using traditional database access patterns, this demo showcases how to leverage Neon's Data API for efficient, secure data access while using Stack Auth for authentication.
+This project demonstrates how to build a modern note-taking application using Neon's Data API (powered by PostgREST), and Neon Auth for authentication. Instead of using traditional database access via a backend, this demo showcases how to leverage Neon's Data API for direct-to-database queries with a very elegant JS SDK.
 
-### **Why Neon Data API and Stack Auth?**
-
-The combination of Neon Data API and Stack Auth provides a powerful, modern stack for building web applications:
-
-**Neon Data API (PostgREST):**
+**Neon Data API (PostgREST-compatible)**
 
 - Instant REST API for your Postgres database
 - Built-in filtering, pagination, and relationships
 - Automatic OpenAPI documentation
-- Row-level security out of the box
 
 This demo is built with:
 
 - [Neon](https://neon.tech)
-- [Stack Auth](https://stackframe.dev/) - Modern Authentication for React
+- [Neon Auth](https://neon.tech/docs/guides/neon-auth)
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
 - [Bun](https://bun.sh/) (v1.0 or newer)
-- A [Neon](https://neon.tech) account and project
-- A Stack Auth account and project
+- A [Neon](https://neon.tech) account and project, with Auth enabled
 
 ## Getting Started
 
@@ -32,7 +26,7 @@ Follow these steps to run the demo:
 
 1. Create a Neon project and enable the Data API
 
-2. Copy the Data API URL and the Stack Auth variables
+2. Copy the Data API URL and the Neon Auth variables
 
 3. Install the dependencies:
 
@@ -47,7 +41,7 @@ Follow these steps to run the demo:
    # Neon Data API
    VITE_NEON_DATA_API_URL=your_neon_data_api_url
 
-   # Stack Auth
+   # Neon Auth
    VITE_PUBLIC_STACK_PROJECT_ID=your_project_id
    VITE_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=your_client_key
    ```
@@ -87,15 +81,5 @@ This application is configured for deployment on Vercel:
 2. Import the project in Vercel
 3. Configure environment variables:
    - Neon Data API credentials
-   - Stack Auth credentials
+   - Neon Auth credentials
 4. Deploy!
-
-## Learn More
-
-- [Neon Data API Documentation](https://neon.tech/docs/data-api)
-- [PostgREST Documentation](https://postgrest.org/en/stable/)
-- [Stack Auth Documentation](https://docs.stack-auth.com/next/overview)
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
