@@ -19,16 +19,14 @@ This demo is built with:
 Before you begin, ensure you have the following installed:
 
 - [Bun](https://bun.sh/) (v1.0 or newer)
-- A [Neon](https://neon.tech) account and project, with Auth enabled
+- A [Neon](https://neon.tech) account and project, with [Auth enabled](https://neon.tech/docs/guides/neon-auth)
 
 ## Getting Started
 
 Follow these steps to run the demo:
 
 1. Create a Neon project and enable the Data API
-
 2. Copy the Data API URL and the Neon Auth variables
-
 3. Install the dependencies:
 
    ```bash
@@ -36,7 +34,7 @@ Follow these steps to run the demo:
    ```
 
 4. **Configure Environment Variables:**
-   Create a `.env` file in the project root with the following variables:
+   Create a `.env` file in the project root with the following variables. Get them from the Neon console.
 
    ```env
    # Neon Data API
@@ -47,7 +45,7 @@ Follow these steps to run the demo:
    VITE_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=your_client_key
    ```
 
-   Optionally you can configure a `DATABASE_URL` environment variable and run `bun run db:migrate` to migrate your database.
+   Optionally, you can configure a `DATABASE_URL` environment variable and run `bun run db:migrate` to migrate your database.
 
 5. **Start the Development Server:**
 
