@@ -18,96 +18,96 @@ import { Route as HandlerSplatImport } from "./routes/handler.$";
 // Create/Update Routes
 
 const NoteRoute = NoteImport.update({
-	id: "/note",
-	path: "/note",
-	getParentRoute: () => rootRoute,
+  id: "/note",
+  path: "/note",
+  getParentRoute: () => rootRoute,
 } as any);
 
 const IndexRoute = IndexImport.update({
-	id: "/",
-	path: "/",
-	getParentRoute: () => rootRoute,
+  id: "/",
+  path: "/",
+  getParentRoute: () => rootRoute,
 } as any);
 
 const HandlerSplatRoute = HandlerSplatImport.update({
-	id: "/handler/$",
-	path: "/handler/$",
-	getParentRoute: () => rootRoute,
+  id: "/handler/$",
+  path: "/handler/$",
+  getParentRoute: () => rootRoute,
 } as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module "@tanstack/react-router" {
-	interface FileRoutesByPath {
-		"/": {
-			id: "/";
-			path: "/";
-			fullPath: "/";
-			preLoaderRoute: typeof IndexImport;
-			parentRoute: typeof rootRoute;
-		};
-		"/note": {
-			id: "/note";
-			path: "/note";
-			fullPath: "/note";
-			preLoaderRoute: typeof NoteImport;
-			parentRoute: typeof rootRoute;
-		};
-		"/handler/$": {
-			id: "/handler/$";
-			path: "/handler/$";
-			fullPath: "/handler/$";
-			preLoaderRoute: typeof HandlerSplatImport;
-			parentRoute: typeof rootRoute;
-		};
-	}
+  interface FileRoutesByPath {
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/note": {
+      id: "/note";
+      path: "/note";
+      fullPath: "/note";
+      preLoaderRoute: typeof NoteImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/handler/$": {
+      id: "/handler/$";
+      path: "/handler/$";
+      fullPath: "/handler/$";
+      preLoaderRoute: typeof HandlerSplatImport;
+      parentRoute: typeof rootRoute;
+    };
+  }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-	"/": typeof IndexRoute;
-	"/note": typeof NoteRoute;
-	"/handler/$": typeof HandlerSplatRoute;
+  "/": typeof IndexRoute;
+  "/note": typeof NoteRoute;
+  "/handler/$": typeof HandlerSplatRoute;
 }
 
 export interface FileRoutesByTo {
-	"/": typeof IndexRoute;
-	"/note": typeof NoteRoute;
-	"/handler/$": typeof HandlerSplatRoute;
+  "/": typeof IndexRoute;
+  "/note": typeof NoteRoute;
+  "/handler/$": typeof HandlerSplatRoute;
 }
 
 export interface FileRoutesById {
-	__root__: typeof rootRoute;
-	"/": typeof IndexRoute;
-	"/note": typeof NoteRoute;
-	"/handler/$": typeof HandlerSplatRoute;
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/note": typeof NoteRoute;
+  "/handler/$": typeof HandlerSplatRoute;
 }
 
 export interface FileRouteTypes {
-	fileRoutesByFullPath: FileRoutesByFullPath;
-	fullPaths: "/" | "/note" | "/handler/$";
-	fileRoutesByTo: FileRoutesByTo;
-	to: "/" | "/note" | "/handler/$";
-	id: "__root__" | "/" | "/note" | "/handler/$";
-	fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/note" | "/handler/$";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/note" | "/handler/$";
+  id: "__root__" | "/" | "/note" | "/handler/$";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-	IndexRoute: typeof IndexRoute;
-	NoteRoute: typeof NoteRoute;
-	HandlerSplatRoute: typeof HandlerSplatRoute;
+  IndexRoute: typeof IndexRoute;
+  NoteRoute: typeof NoteRoute;
+  HandlerSplatRoute: typeof HandlerSplatRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-	IndexRoute: IndexRoute,
-	NoteRoute: NoteRoute,
-	HandlerSplatRoute: HandlerSplatRoute,
+  IndexRoute: IndexRoute,
+  NoteRoute: NoteRoute,
+  HandlerSplatRoute: HandlerSplatRoute,
 };
 
 export const routeTree = rootRoute
-	._addFileChildren(rootRouteChildren)
-	._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
