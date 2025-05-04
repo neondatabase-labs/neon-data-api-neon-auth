@@ -72,6 +72,7 @@ export function NoteTitle({
 
   return (
     <div className="flex items-center gap-2">
+      Title:
       <h3
         ref={titleRef}
         className="cursor-text font-medium outline-none focus:outline-none"

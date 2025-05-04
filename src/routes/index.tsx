@@ -40,12 +40,12 @@ function useNotes() {
 
 function RouteComponent() {
   const user = useUser({ or: "redirect" });
-  const { data, error, status } = useNotes();
+  const { data, error, status, isLoading } = useNotes();
 
   return (
     <>
       <Header user={user} />
-      {status === "pending" && (
+      {(status === "pending" || isLoading) && (
         <div className="text-foreground/70">Loading...</div>
       )}
       {status === "error" && (
