@@ -9,7 +9,7 @@ import { usePostgrest } from "@/lib/postgrest";
 import { generateNameNote } from "@/lib/utils";
 import { stackClientApp } from "@/lib/stack";
 import { useUser } from "@stackframe/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createFileRoute,
   useNavigate,
@@ -41,6 +41,7 @@ function NoteComponent() {
   const user = useUser({ or: "redirect" });
   const { id } = useSearch({ from: Route.fullPath });
   const navigate = useNavigate({ from: Route.fullPath });
+  const queryClient = useQueryClient();
 
   const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
   const [currentParagraph, setCurrentParagraph] = useState<InProgressParagraph>(
@@ -54,6 +55,28 @@ function NoteComponent() {
   );
   const postgrest = usePostgrest();
 
+  const createNoteMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await postgrest
+        .from("notes")
+        .insert({ title: generateNameNote() })
+        .select(
+          "id, title, shared, owner_id, paragraphs (id, content, created_at, note_id)",
+        )
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["note", data.id], data);
+      navigate({ search: { id: data.id } });
+    },
+  });
+
   const {
     data: note,
     isLoading,
@@ -61,23 +84,8 @@ function NoteComponent() {
   } = useQuery({
     queryKey: ["note", id],
     retry: false,
+    enabled: id !== "new-note" && !!id,
     queryFn: async (): Promise<Omit<NoteWithParagraphs, "created_at">> => {
-      if (!id || id === "new-note") {
-        const { data, error } = await postgrest
-          .from("notes")
-          .insert({ title: generateNameNote() })
-          .select(
-            "id, title, shared, owner_id, paragraphs (id, content, created_at, note_id)",
-          )
-          .single();
-
-        if (error) {
-          throw error;
-        }
-
-        return data;
-      }
-
       const { data, error } = await postgrest
         .from("notes")
         .select(
@@ -94,9 +102,16 @@ function NoteComponent() {
     },
   });
 
-  if (id !== note?.id && note?.id) {
-    navigate({ search: { id: note?.id } });
-  }
+  // Create new note if needed
+  useEffect(() => {
+    let isMounted = true;
+    if (id === "new-note" && createNoteMutation.mutate && isMounted) {
+      createNoteMutation.mutate();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [id, createNoteMutation.mutate]);
 
   // Load saved paragraphs
   useEffect(() => {
@@ -224,7 +239,7 @@ function NoteComponent() {
   }
 
   if (error || !note) {
-    return navigate({ to: "/" });
+    return null;
   }
 
   return (
