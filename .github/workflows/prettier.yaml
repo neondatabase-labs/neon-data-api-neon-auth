@@ -13,6 +13,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        
+      - name: Install dependencies
+        run: bun install
 
       - name: Run Prettier
-        run: npm run prettier-check
+        run: bun run prettier-check
