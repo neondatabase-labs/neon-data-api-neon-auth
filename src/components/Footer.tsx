@@ -8,7 +8,16 @@ export function Footer({ className }: { className?: string }) {
         className,
       )}
     >
-      built with Neon 💚
+      built with{" "}
+      <a
+        href="https://neon.tech/home"
+        target="_blank"
+        rel="noopener"
+        className="underline"
+      >
+        Neon
+      </a>{" "}
+      💚
     </footer>
   );
 }
