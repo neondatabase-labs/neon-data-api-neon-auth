@@ -1,0 +1,24 @@
+name: Continuous Integration
+
+# This action works with pull requests and pushes on the main branch
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  prettier:
+    name: Prettier Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run Prettier
+        run: bun run prettier-check

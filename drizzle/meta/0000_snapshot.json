@@ -76,27 +76,21 @@
           "name": "crud-authenticated-policy-select",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "(select auth.user_id() = \"notes\".\"owner_id\")"
         },
         "crud-authenticated-policy-insert": {
           "name": "crud-authenticated-policy-insert",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "withCheck": "(select auth.user_id() = \"notes\".\"owner_id\")"
         },
         "crud-authenticated-policy-update": {
           "name": "crud-authenticated-policy-update",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "(select auth.user_id() = \"notes\".\"owner_id\")",
           "withCheck": "(select auth.user_id() = \"notes\".\"owner_id\")"
         },
@@ -104,18 +98,14 @@
           "name": "crud-authenticated-policy-delete",
           "as": "PERMISSIVE",
           "for": "DELETE",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "(select auth.user_id() = \"notes\".\"owner_id\")"
         },
         "shared_policy": {
           "name": "shared_policy",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "\"notes\".\"shared\" = true"
         }
       },
@@ -159,12 +149,8 @@
           "name": "paragraphs_note_id_notes_id_fk",
           "tableFrom": "paragraphs",
           "tableTo": "notes",
-          "columnsFrom": [
-            "note_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["note_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -176,27 +162,21 @@
           "name": "crud-authenticated-policy-select",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "(select notes.owner_id = auth.user_id() from notes where notes.id = \"paragraphs\".\"note_id\")"
         },
         "crud-authenticated-policy-insert": {
           "name": "crud-authenticated-policy-insert",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "withCheck": "(select notes.owner_id = auth.user_id() from notes where notes.id = \"paragraphs\".\"note_id\")"
         },
         "crud-authenticated-policy-update": {
           "name": "crud-authenticated-policy-update",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "(select notes.owner_id = auth.user_id() from notes where notes.id = \"paragraphs\".\"note_id\")",
           "withCheck": "(select notes.owner_id = auth.user_id() from notes where notes.id = \"paragraphs\".\"note_id\")"
         },
@@ -204,18 +184,14 @@
           "name": "crud-authenticated-policy-delete",
           "as": "PERMISSIVE",
           "for": "DELETE",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "(select notes.owner_id = auth.user_id() from notes where notes.id = \"paragraphs\".\"note_id\")"
         },
         "shared_policy": {
           "name": "shared_policy",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "authenticated"
-          ],
+          "to": ["authenticated"],
           "using": "(select notes.shared from notes where notes.id = \"paragraphs\".\"note_id\")"
         }
       },
