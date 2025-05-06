@@ -242,6 +242,8 @@ function NoteComponent() {
     return null;
   }
 
+  const isOwner = note.owner_id === user.id;
+
   return (
     <>
       <Header user={user} />
@@ -261,12 +263,14 @@ function NoteComponent() {
               timestamp={para.created_at}
             />
           ))}
-          <CurrentParagraph
-            content={currentParagraph.content}
-            timestamp={currentTime}
-            onChange={handleTextareaChange}
-            onKeyDown={handleKeyDown}
-          />
+          {isOwner && (
+            <CurrentParagraph
+              content={currentParagraph.content}
+              timestamp={currentTime}
+              onChange={handleTextareaChange}
+              onKeyDown={handleKeyDown}
+            />
+          )}
         </main>
       </div>
     </>
