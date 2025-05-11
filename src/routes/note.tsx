@@ -4,7 +4,7 @@ import {
   CurrentParagraph,
   Paragraph as WrittenParagraph,
 } from "@/components/app/paragraph";
-import type { NoteWithParagraphs, Paragraph } from "@/lib/api";
+import type { Note, NoteWithParagraphs, Paragraph } from "@/lib/api";
 import { usePostgrest } from "@/lib/postgrest";
 import { generateNameNote } from "@/lib/utils";
 import { stackClientApp } from "@/lib/stack";
@@ -73,6 +73,7 @@ function NoteComponent() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["note", data.id], data);
+      queryClient.setQueryData(["notes"], (old: Note[]) => [data, ...old]);
       navigate({ search: { id: data.id } });
     },
   });
