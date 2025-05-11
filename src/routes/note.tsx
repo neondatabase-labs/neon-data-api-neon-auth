@@ -85,7 +85,7 @@ function NoteComponent() {
   } = useQuery({
     queryKey: ["note", id],
     retry: false,
-    enabled: id !== "new-note" && !!id,
+    enabled: id !== "new-note" && Boolean(id),
     queryFn: async (): Promise<Omit<NoteWithParagraphs, "created_at">> => {
       const { data, error } = await postgrest
         .from("notes")
