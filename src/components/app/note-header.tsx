@@ -1,7 +1,8 @@
 import { NoteTitle } from "@/components/app/note-title";
 import { Toggle } from "@/components/ui/toggle";
+import { Note } from "@/lib/api";
 import { usePostgrest } from "@/lib/postgrest";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -38,6 +39,7 @@ export default function NoteHeader({
   // Determine the current shared state (use optimistic value if available)
   const isShared =
     optimisticShared !== null ? optimisticShared : shared || false;
+  const queryClient = useQueryClient();
 
   const toggleShareMutation = useMutation({
     mutationFn: async (newSharedState: boolean) => {
@@ -52,6 +54,12 @@ export default function NoteHeader({
       return { shared: newSharedState };
     },
     onSuccess: (data) => {
+      queryClient.setQueryData(["note", id], data);
+
+      queryClient.setQueryData(["notes"], (old: Note[]) =>
+        old.map((note) => (note.id === id ? data : note)),
+      );
+
       if (onShareToggle) {
         onShareToggle(data.shared);
       }

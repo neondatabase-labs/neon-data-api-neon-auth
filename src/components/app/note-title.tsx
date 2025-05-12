@@ -1,4 +1,6 @@
+import { Note } from "@/lib/api";
 import { usePostgrest } from "@/lib/postgrest";
+import { useQueryClient } from "@tanstack/react-query";
 import { Copy } from "lucide-react";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 
@@ -43,6 +45,8 @@ export function NoteTitle({
     }
   };
 
+  const queryClient = useQueryClient();
+
   const saveTitle = async () => {
     if (titleRef.current && titleRef.current.textContent !== null && id) {
       const newTitle = titleRef.current.textContent.trim();
@@ -52,6 +56,11 @@ export function NoteTitle({
             .from("notes")
             .update({ title: newTitle })
             .eq("id", id);
+
+          queryClient.setQueryData(["note", id], (old: Note) => ({
+            ...old,
+            title: newTitle,
+          }));
 
           if (error) {
             throw error;
