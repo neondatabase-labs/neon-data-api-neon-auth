@@ -1,80 +1,88 @@
 # note.
 
-This project demonstrates how to build a modern note-taking application using Neon's Data API (powered by PostgREST), and Neon Auth for authentication. Instead of using traditional database access via a backend, this demo showcases how to leverage Neon's Data API for direct-to-database queries with a very elegant JS SDK.
+A modern note-taking application built with Neon's Data API (powered by PostgREST) and Neon Auth. Instead of using traditional database access via a backend, this demo showcases how to leverage Neon's Data API for direct-to-database queries with a very elegant JS SDK. Includes Row-Level Security (RLS) policies to ensure secure data access.
 
 **Neon Data API (PostgREST-compatible)**
 
 - Instant REST API for your Postgres database
 - Built-in filtering, pagination, and relationships
-- Automatic OpenAPI documentation
+- Automatic OpenAPI documentation (served at the root of your Data API)
 
 This demo is built with:
 
 - [Neon](https://neon.tech)
 - [Neon Auth](https://neon.tech/docs/guides/neon-auth)
-- Neon Data API (Postgrest-compatible)
+- [Neon Data API](https://neon.tech/docs/data-api/get-started) (PostgREST-compatible)
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
-
+- [Git](https://git-scm.com/)
 - [Bun](https://bun.sh/) (v1.0 or newer)
-- A [Neon](https://neon.tech) account and project, with [Auth enabled](https://neon.tech/docs/guides/neon-auth)
+- A [Neon](https://neon.tech) account
 
-## Getting Started
+## Quick Start
 
-Follow these steps to run the demo:
-
-1. Create a Neon project and enable the Data API
-2. Copy the Data API URL and the Neon Auth variables
-3. Install the dependencies:
+1. Clone and install:
 
    ```bash
+   git clone https://github.com/neondatabase-labs/neon-data-api-neon-auth
+   cd neon-data-api-neon-auth
    bun install
    ```
 
-4. **Configure Environment Variables:**
-   Create a `.env` file in the project root with the following variables. Get them from the Neon console.
+2. Set up Neon:
+
+   - Create a project
+   - Enable [Data API](https://neon.tech/docs/data-api/get-started) from the **Branch** details page. Copy your Data API URL.
+   - Enable [Neon Auth](https://neon.tech/docs/guides/neon-auth) from **Project > Auth**. Copy your environment variables from the **Setup instructions**.
+
+3. Configure environment:
+
+   Create a `.env` file in the project root with the following variables:
 
    ```env
-   # Neon Data API
-   VITE_NEON_DATA_API_URL=your_neon_data_api_url
+   # Neon Data API (from Branch details)
+   VITE_DATA_API_URL=your_neon_data_api_url
 
-   # Neon Auth
+   # Neon Auth (from Auth setup)
    VITE_PUBLIC_STACK_PROJECT_ID=your_project_id
    VITE_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=your_client_key
+
+   # Optional (for migrations)
+   DATABASE_URL=your_database_connection_string
    ```
 
-   Optionally, you can configure a `DATABASE_URL` environment variable and run `bun run db:migrate` to migrate your database.
-
-5. **Start the Development Server:**
+4. Start the development server:
 
    ```bash
    bun dev
    ```
+   The app will be available at `http://localhost:5173`
 
-6. **Build for Production:**
+5. Build for production:
+
    ```bash
    bun run build
    ```
 
 ## Database Setup
 
-1. Create a Neon project and enable Data API:
+Run these commands to set up your database schema (requires `DATABASE_URL` in your `.env`):
 
-   ```bash
-   bun run db:generate
-   ```
+```bash
+bun run db:generate
+bun run db:migrate
+```
 
-2. Apply the schema:
+The schema includes Row-Level Security (RLS) policies using Drizzle ORM, making sure that:
 
-   ```bash
-   bun run db:migrate
-   ```
+- Users can only access their own notes
+- Shared notes are visible to authenticated users
+- Paragraphs are protected by the same policies as their parent notes
 
-## Deployment
+## Deploy to Vercel
 
-This application is configured for deployment on Vercel:
+This app is optimized for Vercel deployment:
 
 1. Push your code to a Git repository
 2. Import the project in Vercel
