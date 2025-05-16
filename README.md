@@ -16,7 +16,6 @@ This demo is built with:
 
 ## Prerequisites
 
-- [Git](https://git-scm.com/)
 - [Bun](https://bun.sh/) (v1.0 or newer)
 - A [Neon](https://neon.tech) account
 
@@ -34,7 +33,8 @@ This demo is built with:
 
    - Create a project
    - Enable [Data API](https://neon.tech/docs/data-api/get-started) from the **Branch** details page. Copy your Data API URL.
-   - Enable [Neon Auth](https://neon.tech/docs/guides/neon-auth) from **Project > Auth**. Copy your environment variables from the **Setup instructions**.
+   - Copy your environment variables from [Neon Auth setup instructions](https://neon.tech/docs/guides/neon-auth).
+   **Note**: These variables use the Next.js `NEXT_PUBLIC_` prefix, you'll need to change them to the `VITE` prefix for this project.
 
 3. Configure environment:
 
