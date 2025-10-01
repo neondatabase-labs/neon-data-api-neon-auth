@@ -3,7 +3,7 @@ import { PostgrestClient } from "@supabase/postgrest-js";
 import { useContext } from "react";
 
 const postgrestWithHeaders = (headers: Record<string, string>) => {
-  return new PostgrestClient(import.meta.env.VITE_DATA_API_URL!, {
+  return new PostgrestClient(import.meta.env.VITE_NEON_DATA_API_URL!, {
     fetch: async (...args) => {
       const [url, options = {}] = args;
       return fetch(url, {
