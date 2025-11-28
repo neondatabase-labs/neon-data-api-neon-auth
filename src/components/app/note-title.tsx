@@ -1,5 +1,5 @@
 import { Note } from "@/lib/api";
-import { usePostgrest } from "@/lib/postgrest";
+import { client } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { Copy } from "lucide-react";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
@@ -18,7 +18,6 @@ export function NoteTitle({
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState(title);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const postgrest = usePostgrest();
 
   // Focus title when editing
   useEffect(() => {
@@ -52,7 +51,7 @@ export function NoteTitle({
       const newTitle = titleRef.current.textContent.trim();
       if (newTitle !== title) {
         try {
-          const { error } = await postgrest
+          const { error } = await client
             .from("notes")
             .update({ title: newTitle })
             .eq("id", id);

@@ -5,17 +5,16 @@ import {
   Paragraph as WrittenParagraph,
 } from "@/components/app/paragraph";
 import type { Note, NoteWithParagraphs, Paragraph } from "@/lib/api";
-import { usePostgrest } from "@/lib/postgrest";
+import { client } from "@/lib/auth";
 import { generateNameNote } from "@/lib/utils";
-import { stackClientApp } from "@/lib/stack";
-import { useUser } from "@stackframe/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createFileRoute,
+  redirect,
   useNavigate,
   useSearch,
 } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type InProgressParagraph = {
   content: string;
@@ -25,9 +24,12 @@ type InProgressParagraph = {
 // Define the search params schema
 export const Route = createFileRoute("/note")({
   component: NoteComponent,
-  beforeLoad(ctx) {
-    if (!ctx.context.accessToken) {
-      return stackClientApp.redirectToSignIn();
+  async beforeLoad() {
+    const session = await client.auth.getSession();
+    if (!session.data) {
+      throw redirect({
+        to: "/signin",
+      });
     }
   },
   validateSearch: (search: Record<string, unknown>) => {
@@ -38,7 +40,7 @@ export const Route = createFileRoute("/note")({
 });
 
 function NoteComponent() {
-  const user = useUser({ or: "redirect" });
+  const session = client.auth.useSession();
   const { id } = useSearch({ from: Route.fullPath });
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
@@ -53,11 +55,11 @@ function NoteComponent() {
   const [currentTime, setCurrentTime] = useState<string>(
     new Date().toISOString(),
   );
-  const postgrest = usePostgrest();
+  const creatingNoteRef = useRef(false);
 
   const createNoteMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await postgrest
+      const { data, error } = await client
         .from("notes")
         .insert({ title: generateNameNote() })
         .select(
@@ -87,32 +89,31 @@ function NoteComponent() {
     retry: false,
     enabled: id !== "new-note" && Boolean(id),
     queryFn: async (): Promise<Omit<NoteWithParagraphs, "created_at">> => {
-      const { data, error } = await postgrest
+      const { data, error } = await client
         .from("notes")
         .select(
           "id, title, shared, owner_id, paragraphs (id, content, created_at, note_id)",
         )
-        .eq("id", id)
+        .eq("id", id!)
         .single();
 
       if (error) {
         throw error;
       }
 
-      return data;
+      return data as Omit<NoteWithParagraphs, "created_at">;
     },
   });
 
   // Create new note if needed
   useEffect(() => {
-    let isMounted = true;
-    if (id === "new-note" && createNoteMutation.mutate && isMounted) {
+    if (id === "new-note" && !creatingNoteRef.current) {
+      creatingNoteRef.current = true;
       createNoteMutation.mutate();
+    } else if (id !== "new-note") {
+      creatingNoteRef.current = false;
     }
-    return () => {
-      isMounted = false;
-    };
-  }, [id, createNoteMutation.mutate]);
+  }, [id]);
 
   // Load saved paragraphs
   useEffect(() => {
@@ -193,7 +194,7 @@ function NoteComponent() {
         // Save paragraph to database in the background
         (async () => {
           try {
-            const { data, error } = await postgrest
+            const { data, error } = await client
               .from("paragraphs")
               .insert({
                 note_id: id,
@@ -210,7 +211,7 @@ function NoteComponent() {
               // Update the paragraph in state with the actual data from the server
               setParagraphs((currentParagraphs) =>
                 currentParagraphs.map((p) =>
-                  p.id === tempParagraph.id ? data : p,
+                  p.id === tempParagraph.id ? (data as Paragraph) : p,
                 ),
               );
             }
@@ -228,10 +229,14 @@ function NoteComponent() {
     }
   };
 
+  if (!session.data?.user) {
+    return null;
+  }
+
   if (isLoading) {
     return (
       <>
-        <Header user={user} />
+        <Header name={session.data.user.name} />
         <div className="my-10 max-w-2xl mx-auto">
           <div className="text-foreground/70">Loading...</div>
         </div>
@@ -243,18 +248,18 @@ function NoteComponent() {
     return null;
   }
 
-  const isOwner = note.owner_id === user.id;
+  const isOwner = note.owner_id === session.data.user.id;
 
   return (
     <>
-      <Header user={user} />
+      <Header name={session.data.user.name} />
       <div className="flex flex-col gap-4">
         <NoteHeader
           id={note.id}
           title={note.title}
           shared={note.shared}
           owner_id={note.owner_id}
-          user_id={user.id}
+          user_id={session.data.user.id}
         />
         <main className="space-y-4">
           {paragraphs.map((para) => (

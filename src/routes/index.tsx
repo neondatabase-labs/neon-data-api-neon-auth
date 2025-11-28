@@ -1,57 +1,64 @@
 import Header from "@/components/app/header";
 import NotesList from "@/components/app/notes-list";
 import type { Note } from "@/lib/api";
-import { usePostgrest } from "@/lib/postgrest";
-import { stackClientApp } from "@/lib/stack";
-import { useUser } from "@stackframe/react";
+import { client } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
   // Prevent access to this route if the user is not authenticated
-  beforeLoad(ctx) {
-    if (!ctx.context.accessToken) {
-      return stackClientApp.redirectToSignIn();
+  async beforeLoad() {
+    const session = await client.auth.getSession();
+    if (!session.data) {
+      throw redirect({
+        to: "/signin",
+      });
     }
   },
 });
 
 function useNotes() {
-  const postgrest = usePostgrest();
-  const user = useUser({ or: "redirect" });
+  const session = client.auth.useSession();
   return useQuery({
     queryKey: ["notes"],
     queryFn: async (): Promise<Array<Note>> => {
-      const { data, error } = await postgrest
+      if (!session.data) {
+        throw new Error("User is not authenticated");
+      }
+      const { data, error } = await client
         .from("notes")
         .select("id, title, created_at, owner_id, shared")
-        .eq("owner_id", user.id)
+        .eq("owner_id", session.data.user.id)
         .order("created_at", { ascending: false });
 
       if (error) {
         throw error;
       }
 
-      return data;
+      return data as Array<Note>;
     },
   });
 }
 
 function RouteComponent() {
-  const user = useUser({ or: "redirect" });
+  const session = client.auth.useSession();
   const { data, error, status, isLoading } = useNotes();
+
+  if (!session.data?.user) {
+    return null;
+  }
 
   return (
     <>
-      <Header user={user} />
+      <Header name={session.data.user.name} />
       {(status === "pending" || isLoading) && (
         <div className="text-foreground/70">Loading...</div>
       )}
       {status === "error" && (
         <div className="text-foreground/70">Error: {error.message}</div>
       )}
-      {status === "success" && <NotesList user={user} notes={data} />}
+      {status === "success" && <NotesList notes={data} />}
     </>
   );
 }
