@@ -1,14 +1,19 @@
-import type { CurrentUser } from "@stackframe/react";
+import { client } from "@/lib/auth";
+import { useRouter } from "@tanstack/react-router";
 
-export default function Header({ user }: { user: CurrentUser }) {
+export default function Header({ name }: { name: string }) {
+  const router = useRouter();
   return (
     <header className="flex flex-col gap-6 mb-14">
       <div className="flex items-center justify-between">
-        <h3>Welcome {user.displayName?.split(" ")[0]}</h3>
+        <h3>Welcome {name}</h3>
         <button
           type="button"
           className="text-foreground/70 font-normal cursor-pointer"
-          onClick={() => user.signOut()}
+          onClick={async () => {
+            await client.auth.signOut();
+            router.navigate({ to: "/signin" });
+          }}
         >
           Sign out
         </button>

@@ -8,127 +8,88 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as NoteRouteImport } from './routes/note'
+import { Route as IndexRouteImport } from './routes/index'
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as NoteImport } from "./routes/note";
-import { Route as IndexImport } from "./routes/index";
-import { Route as HandlerSplatImport } from "./routes/handler.$";
-
-// Create/Update Routes
-
-const NoteRoute = NoteImport.update({
-  id: "/note",
-  path: "/note",
-  getParentRoute: () => rootRoute,
-} as any);
-
-const IndexRoute = IndexImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => rootRoute,
-} as any);
-
-const HandlerSplatRoute = HandlerSplatImport.update({
-  id: "/handler/$",
-  path: "/handler/$",
-  getParentRoute: () => rootRoute,
-} as any);
-
-// Populate the FileRoutesByPath interface
-
-declare module "@tanstack/react-router" {
-  interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/note": {
-      id: "/note";
-      path: "/note";
-      fullPath: "/note";
-      preLoaderRoute: typeof NoteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/handler/$": {
-      id: "/handler/$";
-      path: "/handler/$";
-      fullPath: "/handler/$";
-      preLoaderRoute: typeof HandlerSplatImport;
-      parentRoute: typeof rootRoute;
-    };
-  }
-}
-
-// Create and export the route tree
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoteRoute = NoteRouteImport.update({
+  id: '/note',
+  path: '/note',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/note": typeof NoteRoute;
-  "/handler/$": typeof HandlerSplatRoute;
+  '/': typeof IndexRoute
+  '/note': typeof NoteRoute
+  '/signin': typeof SigninRoute
 }
-
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/note": typeof NoteRoute;
-  "/handler/$": typeof HandlerSplatRoute;
+  '/': typeof IndexRoute
+  '/note': typeof NoteRoute
+  '/signin': typeof SigninRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/note": typeof NoteRoute;
-  "/handler/$": typeof HandlerSplatRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/note': typeof NoteRoute
+  '/signin': typeof SigninRoute
 }
-
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/note" | "/handler/$";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/note" | "/handler/$";
-  id: "__root__" | "/" | "/note" | "/handler/$";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/note' | '/signin'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/note' | '/signin'
+  id: '__root__' | '/' | '/note' | '/signin'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  NoteRoute: typeof NoteRoute
+  SigninRoute: typeof SigninRoute
 }
 
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  NoteRoute: typeof NoteRoute;
-  HandlerSplatRoute: typeof HandlerSplatRoute;
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/note': {
+      id: '/note'
+      path: '/note'
+      fullPath: '/note'
+      preLoaderRoute: typeof NoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NoteRoute: NoteRoute,
-  HandlerSplatRoute: HandlerSplatRoute,
-};
-
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/note",
-        "/handler/$"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/note": {
-      "filePath": "note.tsx"
-    },
-    "/handler/$": {
-      "filePath": "handler.$.tsx"
-    }
-  }
+  SigninRoute: SigninRoute,
 }
-ROUTE_MANIFEST_END */
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()

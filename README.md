@@ -41,8 +41,7 @@ Follow these steps to run the demo:
    VITE_NEON_DATA_API_URL=your_neon_data_api_url
 
    # Neon Auth
-   VITE_PUBLIC_STACK_PROJECT_ID=your_project_id
-   VITE_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=your_client_key
+   VITE_NEON_AUTH_URL=your_neon_auth_url
    ```
 
    Optionally, you can configure a `DATABASE_URL` environment variable and run `bun run db:migrate` to migrate your database.
@@ -79,6 +78,6 @@ This application is configured for deployment on Vercel:
 1. Push your code to a Git repository
 2. Import the project in Vercel
 3. Configure environment variables:
-   - Neon Data API credentials
-   - Neon Auth credentials
+   - `VITE_NEON_DATA_API_URL`: Neon Data API URL
+   - `VITE_NEON_AUTH_URL`: Neon Auth URL
 4. Deploy!

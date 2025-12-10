@@ -1,15 +1,9 @@
 import NoteCard from "@/components/app/note-card";
 import type { Note } from "@/lib/api";
-import type { CurrentUser } from "@stackframe/react";
 import { useRouter } from "@tanstack/react-router";
 import { PlusCircleIcon } from "lucide-react";
 
-export default function NotesList({
-  notes,
-}: {
-  user: CurrentUser;
-  notes: Note[];
-}) {
+export default function NotesList({ notes }: { notes: Note[] }) {
   const router = useRouter();
 
   const addNote = async () => {

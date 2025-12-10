@@ -1,7 +1,7 @@
 import { NoteTitle } from "@/components/app/note-title";
 import { Toggle } from "@/components/ui/toggle";
 import { Note } from "@/lib/api";
-import { usePostgrest } from "@/lib/postgrest";
+import { client } from "@/lib/auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -23,8 +23,6 @@ export default function NoteHeader({
   user_id,
   onShareToggle,
 }: Props) {
-  const postgrest = usePostgrest();
-
   // Optimistic UI state for shared toggle
   const [optimisticShared, setOptimisticShared] = useState<boolean | null>(
     null,
@@ -43,7 +41,7 @@ export default function NoteHeader({
 
   const toggleShareMutation = useMutation({
     mutationFn: async (newSharedState: boolean) => {
-      const { error } = await postgrest
+      const { error } = await client
         .from("notes")
         .update({
           shared: newSharedState,
